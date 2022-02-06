@@ -5,6 +5,7 @@ import {Customer} from "../shared/schemas/customer.schema";
 import {PaginationQueryDto} from "../shared/dto/paginationQuery.dto";
 import {CustomerDto} from "../shared/dto/customer.dto";
 import {CustomerInterface} from "../shared/interfaces/customer.interface";
+import {UpdateCustomerDto} from "../shared/dto/updateCustomer.dto";
 
 @Injectable()
 export class CustomersService {
@@ -29,5 +30,20 @@ export class CustomersService {
     public async create( creatCustomerDto: CustomerDto ):Promise<CustomerInterface> {
         const newCustomer = await new this.customerModel(creatCustomerDto);
         return newCustomer.save();
+    }
+
+    public async update(customerId:string, updateCustomerDto:UpdateCustomerDto):Promise<CustomerInterface>{
+        const existingCustomer = await this.customerModel.findByIdAndUpdate(
+            {_id:customerId},
+            updateCustomerDto);
+        if(!existingCustomer) {
+            throw new NotFoundException(`Customer #${customerId} not found`);
+        }
+        return existingCustomer;
+    }
+
+    public async remove(customerId:string):Promise<any>{
+        const deletedCustomer = await this.customerModel.findByIdAndRemove(customerId);
+        return deletedCustomer
     }
 }
