@@ -6,11 +6,16 @@ import {PaginationQueryDto} from "../shared/dto/paginationQuery.dto";
 import {CustomerDto} from "../shared/dto/customer.dto";
 import {CustomerInterface} from "../shared/interfaces/customer.interface";
 import {UpdateCustomerDto} from "../shared/dto/updateCustomer.dto";
+import {Cron, CronExpression} from "@nestjs/schedule";
+import { Partners } from 'src/shared/schemas/partners.schema';
+import { PartnersDto } from 'src/shared/dto/partners.dto';
+import { PartnersInterface } from 'src/shared/interfaces/partners.interface';
 
 @Injectable()
 export class CustomersService {
     constructor(
         @InjectModel(Customer.name) private readonly customerModel: Model<Customer>,
+        @InjectModel(Partners.name) private readonly partnersModel: Model<Partners>
     ) {}
 
     public async findAll( paginationQuery: PaginationQueryDto ):Promise<Customer[]> {
@@ -27,9 +32,12 @@ export class CustomersService {
         return customer;
     }
 
-    public async create( creatCustomerDto: CustomerDto ):Promise<CustomerInterface> {
-        const newCustomer = await new this.customerModel(creatCustomerDto);
-        return newCustomer.save();
+    public async create( creatCustomerDto: CustomerDto, createPartnerDto: PartnersDto ):Promise<Customer> {
+        const newCustomer = await new this.customerModel({...creatCustomerDto});
+        const newPartner = await new this.partnersModel({...createPartnerDto})
+        newCustomer.save();
+        newPartner.save();
+        return
     }
 
     public async update(customerId:string, updateCustomerDto:UpdateCustomerDto):Promise<CustomerInterface>{
@@ -46,4 +54,11 @@ export class CustomersService {
         const deletedCustomer = await this.customerModel.findByIdAndRemove(customerId);
         return deletedCustomer
     }
+
+    // @Cron(CronExpression.EVERY_10_SECONDS)
+    // public async testCron(){
+    //     let counter = 0;
+    //         console.log(`no ${counter}`)
+    //     return
+    // }
 }

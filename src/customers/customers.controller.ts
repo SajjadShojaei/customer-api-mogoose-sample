@@ -15,6 +15,7 @@ import {CustomersService} from "./customers.service";
 import {PaginationQueryDto} from "../shared/dto/paginationQuery.dto";
 import {CustomerDto} from "../shared/dto/customer.dto";
 import {UpdateCustomerDto} from "../shared/dto/updateCustomer.dto";
+import { PartnersDto } from 'src/shared/dto/partners.dto';
 
 @Controller('customers')
 export class CustomersController {
@@ -36,9 +37,9 @@ export class CustomersController {
     }
 
     @Post('customer/create')
-    public async createCustomer(@Res() res, @Body() createCustomerDto:CustomerDto) {
+    public async createCustomer(@Res() res, @Body() createCustomerDto:CustomerDto, createPartnerDto:PartnersDto) {
         try {
-            const customer = await this.customerService.create(createCustomerDto);
+            const customer = await this.customerService.create(createCustomerDto,createPartnerDto);
             return res.status(HttpStatus.OK).json({
                 message: 'Customer has been created successfully',
                 customer,

@@ -1,5 +1,8 @@
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import { Document } from 'mongoose'
+import { Document, Types } from 'mongoose'
+import { Partners } from "./partners.schema";
+
+export type CustomerDocument = Customer & Document
 
 @Schema()
 export class Customer extends Document {
@@ -9,6 +12,17 @@ export class Customer extends Document {
     @Prop({ unique: true })
     lastName: string;
 
+    @Prop({
+        type: Object,
+        ref: Partners.name
+    })
+    partnerName: Types.ObjectId;
+
+    @Prop({
+        type: Object,
+        ref: Partners.name
+    })
+    partnerPhone: Types.ObjectId;
 
     @Prop({ unique: true })
     email: string;

@@ -1,4 +1,4 @@
-import {IsEmail, IsNotEmpty, IsString, MaxLength} from "class-validator";
+import {IsEmail, IsNotEmpty, IsObject, IsString, MaxLength} from "class-validator";
 
 export class CustomerDto {
     @IsString()
@@ -10,6 +10,16 @@ export class CustomerDto {
     @MaxLength(30)
     @IsNotEmpty()
     readonly lastName: string;
+
+    @IsString()
+    @MaxLength(30)
+    @IsNotEmpty()
+    readonly partnerName: object;
+
+    @IsString()
+    @MaxLength(30)
+    @IsNotEmpty()
+    readonly partnerPhone: object;
 
     @IsString()
     @IsEmail()
